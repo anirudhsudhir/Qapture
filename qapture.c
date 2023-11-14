@@ -6,6 +6,7 @@ typedef uint8_t BYTE;
 
 char *fileout_name;
 int fileout_count = 0;
+const int blocksize = 512;
 
 int argCheck(int argc, char *rawfile) {
   if (argc != 2) {
@@ -14,6 +15,7 @@ int argCheck(int argc, char *rawfile) {
     return 1;
   }
   FILE *rawdata = fopen(rawfile, "r");
+  fclose(rawdata);
   if (rawdata == NULL) {
     printf("Unable to open the file\n");
     return 1;
@@ -34,16 +36,16 @@ FILE *writeJPEG(FILE *jpeg, BYTE buffer[], int new_file) {
       return NULL;
     }
   }
-  fwrite(buffer, 1, 512, jpeg);
+  fwrite(buffer, 1, blocksize, jpeg);
   return jpeg;
 }
 
 int readRawData(char *rawfile) {
   FILE *rawdata = fopen(rawfile, "r");
-  const int blocksize = 512;
   BYTE buffer[blocksize];
+  int writeStatus = 0;
 
-  fileout_name = malloc(4);
+  fileout_name = malloc(8);
   if (fileout_name == NULL) {
     printf("Error allocating memory");
     return 1;
@@ -56,11 +58,12 @@ int readRawData(char *rawfile) {
     if (buffer[0] == 255 && buffer[1] == 216 && buffer[2] == 255 &&
         buffer[3] >= 224 && buffer[3] <= 240) {
       file = writeJPEG(file, buffer, 1);
+      writeStatus = 1;
       if (file == NULL) {
         return 1;
       }
     } else {
-      if (file != NULL) {
+      if (writeStatus == 1) {
         file = writeJPEG(file, buffer, 0);
         if (file == NULL) {
           return 1;
@@ -68,6 +71,7 @@ int readRawData(char *rawfile) {
       }
     }
   }
+  fclose(file);
   fclose(rawdata);
   free(fileout_name);
   return 0;
