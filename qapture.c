@@ -4,58 +4,78 @@
 
 typedef uint8_t BYTE;
 
-int argCheck(int argc, FILE *file) {
+char *fileout_name;
+int fileout_count = 0;
+
+int argCheck(int argc, char *rawfile) {
   if (argc != 2) {
     // TODO: Change ./recover to ./quapture
     printf("Usage: ./recover IMAGE\n");
     return 1;
   }
-  if (file == NULL) {
+  FILE *rawdata = fopen(rawfile, "r");
+  if (rawdata == NULL) {
     printf("Unable to open the file\n");
     return 1;
   }
   return 0;
 }
 
-int main(int argc, char *argv[]) {
-  FILE *rawdata = fopen(argv[1], "r");
-  if (argCheck(argc, rawdata) == 1) {
-    return 1;
+FILE *writeJPEG(FILE *jpeg, BYTE buffer[], int new_file) {
+  if (new_file == 1) {
+    if (jpeg != NULL) {
+      fwrite("\n", 1, 1, jpeg);
+      fclose(jpeg);
+    }
+    sprintf(fileout_name, "%.3d.jpg", fileout_count++);
+    jpeg = fopen(fileout_name, "wb");
+    if (jpeg == NULL) {
+      printf("Unable to create JPEG files");
+      return NULL;
+    }
   }
+  fwrite(buffer, 1, 512, jpeg);
+  return jpeg;
+}
 
+int readRawData(char *rawfile) {
+  FILE *rawdata = fopen(rawfile, "r");
   const int blocksize = 512;
   BYTE buffer[blocksize];
 
-  char *fileout_name = malloc(4);
+  fileout_name = malloc(4);
   if (fileout_name == NULL) {
     printf("Error allocating memory");
     return 1;
   }
-  int fileout_count = 0;
-  FILE *jpeg = NULL;
+  fileout_count = 0;
+  FILE *file = NULL;
 
   // TODO: Add custom block size
   while (fread(buffer, 1, blocksize, rawdata) == blocksize) {
     if (buffer[0] == 255 && buffer[1] == 216 && buffer[2] == 255 &&
         buffer[3] >= 224 && buffer[3] <= 240) {
-      sprintf(fileout_name, "%.3d.jpg", fileout_count++);
-      if (jpeg != NULL) {
-        fprintf(jpeg, "\n");
-        fclose(jpeg);
-      }
-      jpeg = fopen(fileout_name, "wb");
-      if (jpeg == NULL) {
-        printf("Unable to create JPEG files");
+      file = writeJPEG(file, buffer, 1);
+      if (file == NULL) {
         return 1;
       }
-      fwrite(buffer, 1, 512, jpeg);
     } else {
-      if (jpeg != NULL) {
-        fwrite(buffer, 1, 512, jpeg);
+      if (file != NULL) {
+        file = writeJPEG(file, buffer, 0);
+        if (file == NULL) {
+          return 1;
+        }
       }
     }
   }
   fclose(rawdata);
   free(fileout_name);
   return 0;
+}
+
+int main(int argc, char *argv[]) {
+  if (argCheck(argc, argv[1]) == 1) {
+    return 1;
+  }
+  return readRawData(argv[1]);
 }
