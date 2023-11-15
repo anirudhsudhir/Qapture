@@ -10,8 +10,7 @@ const int blocksize = 512;
 
 int argCheck(int argc, char *rawfile) {
   if (argc != 2) {
-    // TODO: Change ./recover to ./quapture
-    printf("Usage: ./recover IMAGE\n");
+    printf("Usage: ./qapture IMAGE.raw\n");
     return 1;
   }
   FILE *rawdata = fopen(rawfile, "r");
@@ -26,7 +25,6 @@ int argCheck(int argc, char *rawfile) {
 FILE *writeJPEG(FILE *jpeg, BYTE buffer[], int new_file) {
   if (new_file == 1) {
     if (jpeg != NULL) {
-      fwrite("\n", 1, 1, jpeg);
       fclose(jpeg);
     }
     sprintf(fileout_name, "%.3d.jpg", fileout_count++);
@@ -53,7 +51,6 @@ int readRawData(char *rawfile) {
   fileout_count = 0;
   FILE *file = NULL;
 
-  // TODO: Add custom block size
   while (fread(buffer, 1, blocksize, rawdata) == blocksize) {
     if (buffer[0] == 255 && buffer[1] == 216 && buffer[2] == 255 &&
         buffer[3] >= 224 && buffer[3] <= 240) {
