@@ -22,8 +22,8 @@ A WIP CLI tool to recover JPEGs from a forensic image.
    ./qapture IMAGE.raw
    ```
 
-Currently, the tool assumes that the data was stored in a FAT filesystem with a block size of 512 bytes.
+4.  Enter the block size of the RAW image in bytes (Usually 512 for FAT filesystems):
 
-### Todo:
-- [ ] Print number of files found
-- [ ] Stop reading when EOF character encountered
+      ```
+      Enter the block size of the RAW image in bytes: 512
+      ```
