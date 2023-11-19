@@ -25,7 +25,5 @@ A WIP CLI tool to recover JPEGs from a forensic image.
 Currently, the tool assumes that the data was stored in a FAT filesystem with a block size of 512 bytes.
 
 ### Todo:
-- [ ] Write files to a separate folder
 - [ ] Print number of files found
 - [ ] Stop reading when EOF character encountered
-- [ ] Implement custom block sizes
