@@ -6,7 +6,7 @@ typedef uint8_t BYTE;
 
 char *fileout_name;
 int fileout_count = 0;
-const int blocksize = 512;
+int blocksize;
 
 int argCheck(int argc, char *rawfile) {
   if (argc != 2) {
@@ -77,6 +77,11 @@ int readRawData(char *rawfile) {
 int main(int argc, char *argv[]) {
   if (argCheck(argc, argv[1]) == 1) {
     return 1;
+  }
+  printf("Enter the blocksize: ");
+  if (scanf("%d",&blocksize) != 1) {
+    printf("Invalid arguments\n");
+    exit(1);
   }
   return readRawData(argv[1]);
 }
