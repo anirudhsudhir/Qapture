@@ -47,7 +47,14 @@ FILE *writeJPEG(FILE *jpeg, BYTE buffer[], int new_file) {
       exit(0);
     }
   }
-  fwrite(buffer, 1, blocksize, jpeg);
+  for (int i=0; i<blocksize; i++) {
+    if (buffer[i] == 255 && buffer[i+1] == 217) {
+      BYTE eoi[2] = {buffer[i],buffer[i+1]};
+      fwrite(eoi, 1, 2, jpeg);
+      break;
+    }
+    fwrite(&buffer[i], 1, 1, jpeg);
+  }
   return jpeg;
 }
 
