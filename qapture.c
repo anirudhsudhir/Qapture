@@ -49,7 +49,7 @@ FILE *writeJPEG(FILE *jpeg, BYTE buffer[], int new_file)
     {
       fclose(jpeg);
     }
-    sprintf(fileout_name, "./images/%.3d.jpg", fileout_count++);
+    sprintf(fileout_name, "./images/%d.jpg", ++fileout_count);
     jpeg = fopen(fileout_name, "wb");
     if (jpeg == NULL)
     {
@@ -75,7 +75,6 @@ void readRawData(char *rawfile)
   FILE *rawdata = fopen(rawfile, "r");
   BYTE buffer[blocksize];
   int writeStatus = 0;
-  int fileCount = 0;
 
   fileout_name = malloc(8);
   if (fileout_name == NULL)
@@ -93,7 +92,6 @@ void readRawData(char *rawfile)
     {
       file = writeJPEG(file, buffer, 1);
       writeStatus = 1;
-      fileCount++;
     }
     else
     {
@@ -106,7 +104,7 @@ void readRawData(char *rawfile)
   fclose(file);
   fclose(rawdata);
   free(fileout_name);
-  printf("Number of files recovered: %i\n", fileCount);
+  printf("Number of files recovered: %i\n", fileout_count);
 }
 
 int main(int argc, char *argv[])
