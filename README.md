@@ -1,6 +1,6 @@
 # Qapture
 
-A CLI tool to recover JPEGs from a forensic image.
+A CLI tool to recover deleted JPEGs from a forensic image.
 
 ### Usage:
 1. Clone this repository and navigate to the project directory:

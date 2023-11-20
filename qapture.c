@@ -88,7 +88,7 @@ void readRawData(char *rawfile)
   while (fread(buffer, 1, blocksize, rawdata) == blocksize)
   {
     if (buffer[0] == 255 && buffer[1] == 216 && buffer[2] == 255 &&
-        buffer[3] >= 224 && buffer[3] <= 240)
+        buffer[3] >= 224 && buffer[3] <= 239)
     {
       file = writeJPEG(file, buffer, 1);
       writeStatus = 1;
