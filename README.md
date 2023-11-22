@@ -29,9 +29,9 @@ A CLI tool to recover deleted JPEGs from a forensic image, written in C.
    ./qapture card.raw
    ```
 
-4.  Enter the block size of the RAW image in bytes (Usually 512 for FAT filesystems):
+4.  Enter the block size of the RAW image in bytes:
    
-    If using the provided image, enter 512:
+    If using the provided image, enter 512
 
     ```
     Enter the block size of the RAW image in bytes: 512
